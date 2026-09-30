@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 PREDICTOR DE CHANCE - COLOMBIA</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 10px 10px 80px 10px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .container {
+            max-width: 440px;
+            margin: 10px auto;
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h1 { color: #00e676; font-size: 26px; margin-bottom: 5px; font-weight: bold; }
+        p { color: #b0bec5; font-size: 14px; margin-top: 0; }
+        
+        /* Login por celular */
+        .login-box { margin-top: 25px; padding: 10px; }
+        .input-celular {
+            width: 90%; padding: 15px; font-size: 20px; text-align: center;
+            background-color: #333333; color: #ffffff; border: 2px solid #2979ff;
+            border-radius: 10px; margin-top: 10px; letter-spacing: 2px;
+        }
+        .input-celular:focus { outline: none; border-color: #00e676; }
+
+        /* Control de Vistas */
+        .seccion-app { display: none; }
+        #seccion-login { display: block; }
+
+        select {
+            width: 100%; padding: 15px; font-size: 18px; background-color: #333333;
+            color: #ffffff; border: 2px solid #00e676; border-radius: 10px;
+            margin-top: 15px; cursor: pointer;
+        }
+        button {
+            width: 100%; padding: 18px; font-size: 18px; font-weight: bold;
+            background-color: #00e676; color: #000000; border: none;
+            border-radius: 12px; margin-top: 20px; cursor: pointer; transition: 0.2s;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-login { background-color: #2979ff; color: #ffffff; }
+        .status { color: #ffd600; font-size: 16px; margin: 15px 0; }
+        .card {
+            background-color: #2d2d2d; padding: 15px; border-radius: 10px;
+            margin: 12px 0; font-size: 18px; color: #b0bec5;
+        }
+        .number {
+            font-size: 34px; font-weight: bold; color: #ffffff;
+            letter-spacing: 6px; display: inline-block; margin-left: 10px;
+        }
+        .signos-title { color: #2979ff; font-size: 18px; font-weight: bold; margin-top: 20px; }
+        .signo-item { font-size: 22px; font-weight: bold; margin: 5px 0; }
+
+        /* Estilos de Modos de Uso y Comentarios */
+        .texto-info { text-align: left; line-height: 1.6; color: #e0e0e0; font-size: 15px; }
+        .texto-info ul { padding-left: 20px; }
+        .texto-info li { margin-bottom: 10px; }
+        textarea {
+            width: 95%; height: 120px; background-color: #333333; color: #ffffff;
+            border: 2px solid #2979ff; border-radius: 10px; padding: 10px;
+            font-size: 16px; resize: none; margin-top: 10px;
+        }
+
+        /* Barra de Navegación Fija Inferior */
+        .navbar-inferior {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background-color: #1a1a1a; border-top: 2px solid #333333;
+            display: none; justify-content: space-around; padding: 10px 0; z-index: 1000;
+        }
+        .nav-btn {
+            background: none; border: none; color: #888888; font-size: 13px;
+            font-weight: bold; cursor: pointer; padding: 5px; margin: 0; width: auto;
+        }
+        .nav-btn.activo { color: #00e676; }
+        .nav-btn span { display: block; font-size: 22px; margin-bottom: 2px; }
+        
+        /* Ocultar el iframe del puente de datos */
+        #iframe-oculto { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎲 PREDICTOR DE CHANCE</h1>
+    <p>Resultados y proyecciones automáticas</p>
+    
+    <!-- PANTALLA 1: REGISTRO DE CELULAR -->
+    <div id="seccion-login" class="login-box">
+        <div style="font-size:16px; color:#ffd600; margin-bottom:15px; font-weight:bold;">¡ACCESO GRATUITO POR TIEMPO LIMITADO!</div>
+        <p>Para activar tus jugadas de hoy, ingresa tu número de celular:</p>
+        
+        <!-- Formulario clásico compatible con todos los navegadores -->
+        <form id="formulario-registro" action="https://google.com" method="GET" target="iframe-oculto">
+            <input type="tel" id="celular" name="celular" class="input-celular" placeholder="Ej: 3134966271" maxlength="10" required>
+            <button type="button" class="btn-login" onclick="registrarUsuario()">INGRESAR AL SISTEMA 🚀</button>
+        </form>
+        
+        <div id="login-status" class="status"></div>
+    </div>
+
+    <!-- IFRAME OCULTO: Permite enviar los datos de fondo sin recargar la página ni congelarse -->
+    <iframe name="iframe-oculto" id="iframe-oculto"></iframe>
+
+    <!-- PANTALLA 2: PREDICTOR -->
+    <div id="seccion-predictor" class="seccion-app">
+        <select id="sorteo">
+            <option value="">Toca aquí para elegir...</option>
+            <option value="1">Dorado Mañana</option>
+            <option value="2">Dorado Tarde</option>
+            <option value="3">Dorado Noche</option>
+            <option value="4">Astro Sol</option>
+            <option value="5">Astro Luna</option>
+            <option value="6">Chontico Día</option>
+            <option value="7">Chontico Noche</option>
+            <option value="8">Paisita Día</option>
+            <option value="9">Paisita Noche</option>
+            <option value="10">Paisita Tres</option>
+            <option value="11">Cafeterito Tarde</option>
+            <option value="12">Cafeterito Noche</option>
+            <option value="13">Pijao Oro</option>
+            <option value="14">Lotería de Cundinamarca</option>
+            <option value="15">Lotería del Tolima</option>
+            <option value="16">Lotería de la Cruz Roja</option>
+            <option value="17">Lotería del Huila</option>
+            <option value="18">Lotería del Meta</option>
+            <option value="19">Lotería del Valle</option>
+            <option value="20">Lotería de Manizales</option>
+            <option value="21">Lotería de Bogotá</option>
+            <option value="22">Lotería del Quindío</option>
+            <option value="23">Lotería de Santander</option>
+            <option value="24">Lotería de Risaralda</option>
+            <option value="25">Lotería de Medellín</option>
+            <option value="26">Lotería de Boyacá</option>
+            <option value="27">Lotería del Cauca</option>
+        </select>
+        <button onclick="calcularPrediccion()">VER JUGADAS SUGERIDAS</button>
+        <div id="status" class="status"></div>
+        <div id="resultados"></div>
+        <div id="signos"></div>
+    </div>
+
+    <!-- PANTALLA 3: MODOS DE USO -->
+    <div id="seccion-modos" class="seccion-app texto-info">
+        <h3 style="color:#00e676; text-align:center;">📖 MODOS DE USO Y RECOMENDACIONES</h3>
+        <p>Para aumentar sus probabilidades con nuestros pronósticos automáticos basados en entropía de balotas, le sugerimos seguir estas pautas:</p>
+        <ul>
+            <li><strong>Apueste las combinaciones clave:</strong> El sistema genera 5 opciones de 4 cifras. Es recomendable jugarlas también por las 3 últimas cifras (*combinado* o *directo*).</li>
+            <li><strong>Frecuencia óptima:</strong> Genere las jugadas preferiblemente entre 1 y 2 horas antes de que ruede el sorteo oficial elegido.</li>
+            <li><strong>Sorteos Astro:</strong> Preste especial atención a los 3 signos demorados sugeridos. Combinar el número de su opción favorita con el primer signo demorado aumenta considerablemente la efectividad del acierto.</li>
+        </ul>
+    </div>
+
+    <!-- PANTALLA 4: COMENTARIOS -->
+    <div id="seccion-comentarios" class="seccion-app">
+        <h3 style="color:#2979ff;">💬 ENVIAR SUGERENCIA</h3>
+        <p>Tu opinión nos ayuda a evaluar y mejorar el Predictor de Chance. Escribe tu mensaje abajo para enviarlo a nuestro WhatsApp de soporte:</p>
+        <textarea id="mensaje-comentario" placeholder="Escribe aquí tu experiencia, dudas o sugerencias con la aplicación..."></textarea>
+        <button style="background-color:#00e676; color:#000000;" onclick="enviarComentario()">ENVIAR A WHATSAPP 🟢</button>
+        <div id="comentario-status" class="status"></div>
+    </div>
+</div>
+
+<!-- BARRA DE NAVEGACIÓN FIJA INFERIOR -->
+<div id="navbar" class="navbar-inferior">
+    <button class="nav-btn activo" id="btn-nav-predictor" onclick="cambiarPestaña('predictor')"><span>🎲</span>Inicio</button>
+    <button class="nav-btn" id="btn-nav-modos" onclick="cambiarPestaña('modos')"><span>📖</span>Modos de Uso</button>
+    <button class="nav-btn" id="btn-nav-comentarios" onclick="cambiarPestaña('comentarios')"><span>💬</span>Comentarios</button>
+</div>
+
+<script>
+    let celularUsuarioLogueado = "";
+
+    const emojisSignos = {
+        "ARIES":"Aries ♈", "TAURO":"Tauro ♉", "GEMINIS":"Géminis ♊", "CANCER":"Cáncer ♋", 
+        "LEO":"Leo 🟡", "VIRGO":"Virgo ♍", "LIBRA":"Libra ♎", "ESCORPION":"Escorpión ♏", 
+        "SAGITARIO":"Sagitario ♐", "CAPRICORNIO":"Capricornio ♑", "ACUARIO":"Acuario ♒", "PISCIS":"Piscis ♓"
+    };
+
+    function registrarUsuario() {
+        const celInput = document.getElementById("celular").value.trim();
+        const loginStatus = document.getElementById("login-status");
+
+        if (celInput.length < 10 || isNaN(celInput)) {
+            loginStatus.innerHTML = "⚠️ Por favor, ingresa un número de celular válido de 10 dígitos.";
+            return;
+        }
+
+        celularUsuarioLogueado = celInput;
+        loginStatus.innerHTML = "⏳ Verificando y activando tu acceso...";
+
+
